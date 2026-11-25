@@ -1,0 +1,8 @@
+# Налаштування проєкту для Cloudflare Workers
+name = "svitlo-lviv"            # з цієї назви буде адреса: svitlo-lviv.<твій-нік>.workers.dev
+main = "src/worker.js"          # серверний код
+compatibility_date = "2026-11-01"
+
+# Статичні файли сайту (HTML, CSS, JS, іконки)
+[assets]
+directory = "./public"

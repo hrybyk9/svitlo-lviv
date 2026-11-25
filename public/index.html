@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Світло · Львів</title>
+
+  <!-- Налаштування PWA: щоб сайт можна було "встановити" як додаток -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#16181d">
+  <link rel="icon" href="/icons/icon-192.png">
+  <!-- Для iPhone: іконка та повноекранний режим -->
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>Світло · Львів</h1>
+      <p id="updated" class="muted">Завантаження…</p>
+    </div>
+    <button id="settingsBtn" class="icon-btn" aria-label="Налаштування">⚙️</button>
+  </header>
+
+  <main>
+    <!-- Повідомлення про помилку або офлайн-режим -->
+    <p id="message" class="message" hidden></p>
+
+    <!-- Картки вибраних груп -->
+    <section id="myGroups"></section>
+
+    <!-- Усі групи (згорнуто) -->
+    <details class="all">
+      <summary>Усі групи</summary>
+      <div id="allGroups"></div>
+    </details>
+  </main>
+
+  <!-- Вікно налаштувань -->
+  <dialog id="settings">
+    <form method="dialog">
+      <h2>Мої групи</h2>
+      <p class="muted">Познач групи, які хочеш бачити. Підпис необов'язковий — наприклад «Дім» чи «Бабуся».
+        Зірочка ★ — головна група, вона показується першою.</p>
+      <div id="groupPicker"></div>
+      <div class="dialog-actions">
+        <button value="cancel" class="btn secondary">Скасувати</button>
+        <button id="saveBtn" value="save" class="btn">Зберегти</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- type="module" дозволяє використовувати import -->
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

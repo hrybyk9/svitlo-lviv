@@ -1,0 +1,175 @@
+/* style.css — темна тема, розрахована насамперед на телефон */
+
+:root {
+  --bg: #16181d;
+  --card: #20232a;
+  --text: #f1f2f4;
+  --muted: #9aa0ab;
+  --on: #3ecf6e;      /* світло є */
+  --off: #ff5a4e;     /* світла немає */
+  --accent: #ffb020;  /* жовтий, як у Львівобленерго */
+  --track: #343842;   /* фон шкали */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* відступи під "чубчик" iPhone */
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+
+main { max-width: 560px; margin: 0 auto; padding: 0 16px 32px; }
+
+.top {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+h1 { margin: 0; font-size: 22px; }
+h2 { margin: 0 0 8px; }
+.muted { color: var(--muted); margin: 4px 0 0; font-size: 14px; }
+
+.icon-btn {
+  background: var(--card);
+  border: 0;
+  border-radius: 12px;
+  font-size: 22px;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+}
+
+.message {
+  background: #3a2f12;
+  color: var(--accent);
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+.empty { color: var(--muted); text-align: center; padding: 32px 0; }
+
+/* ---------- Картка групи ---------- */
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border-left: 6px solid var(--muted);
+}
+.card.on  { border-left-color: var(--on); }
+.card.off { border-left-color: var(--off); }
+
+.card-head { display: flex; align-items: center; gap: 10px; }
+.label { color: var(--muted); font-size: 15px; }
+
+.badge {
+  background: var(--accent);
+  color: #1b1b1b;
+  font-weight: 800;
+  border-radius: 8px;
+  padding: 2px 8px;
+  font-size: 18px;
+}
+.badge.small { font-size: 14px; padding: 1px 6px; }
+
+.status { font-size: 20px; font-weight: 700; margin: 12px 0 2px; }
+.on .status  { color: var(--on); }
+.off .status { color: var(--off); }
+.countdown { margin: 0 0 6px; color: var(--muted); font-size: 14px; }
+
+.day { margin-top: 12px; }
+.day-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+/* ---------- Шкала доби ---------- */
+.timeline {
+  position: relative;
+  height: 14px;
+  background: var(--track);
+  border-radius: 7px;
+  overflow: hidden;
+}
+.seg { position: absolute; top: 0; bottom: 0; background: var(--off); }
+.now { position: absolute; top: -2px; bottom: -2px; width: 2px; background: #fff; }
+.ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ---------- Усі групи ---------- */
+.all { background: var(--card); border-radius: 18px; padding: 12px 16px; }
+.all summary { cursor: pointer; font-weight: 600; }
+.row { margin-top: 12px; }
+.row-head { display: flex; gap: 8px; align-items: center; font-size: 14px; margin-bottom: 4px; }
+.row.on .row-head span:last-child  { color: var(--on); }
+.row.off .row-head span:last-child { color: var(--off); }
+
+/* ---------- Налаштування ---------- */
+dialog {
+  background: var(--card);
+  color: var(--text);
+  border: 0;
+  border-radius: 18px;
+  width: min(480px, 92vw);
+  max-height: 90vh;
+  padding: 20px;
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+
+.pick { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+.pick-check { display: flex; align-items: center; gap: 6px; }
+.pick-label {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--track);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 15px;
+}
+.pick-main { color: var(--accent); white-space: nowrap; }
+input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-color: var(--accent); }
+
+.dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+.btn {
+  background: var(--accent);
+  color: #1b1b1b;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+.btn.secondary { background: var(--track); color: var(--text); }
+
+/* ---------- Режим "табло" для телевізора: /?tv&group=2.1 ---------- */
+body.tv .top, body.tv .all { display: none; }
+body.tv main { max-width: none; padding: 4vh 6vw; }
+body.tv .card { padding: 5vh 4vw; border-left-width: 1.5vw; }
+body.tv .badge { font-size: 5vh; }
+body.tv .status { font-size: 9vh; }
+body.tv .countdown { font-size: 4vh; }
+body.tv .day-head { font-size: 3vh; }
+body.tv .timeline { height: 4vh; border-radius: 2vh; }
+body.tv .ticks { font-size: 2.2vh; }
+
+/* однакова ширина значків груп у налаштуваннях, щоб поля підписів стояли рівно */
+.pick .badge { min-width: 40px; text-align: center; }
