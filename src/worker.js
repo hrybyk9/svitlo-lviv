@@ -1,26 +1,14 @@
 // worker.js — серверна частина на Cloudflare Workers.
 // Файли з папки public/ (сайт) Cloudflare віддає сам,
-// а сюди потрапляють лише запити, для яких такого файлу немає, тобто /api/...
+// а сюди потрапляють лише запити, для яких такого файлу немає:
+//   /api/...     — дані для сайту
+//   /telegram    — повідомлення від Telegram-бота
+// Крім того, функція scheduled запускається за розкладом (cron) для сповіщень.
 
-import { parseSchedule, groupStatus, kyivNow } from '../public/parser.js';
-
-// Адреса, звідки сайт Львівобленерго бере графіки
-const LOE_URL = 'https://api.loe.lviv.ua/api/menus?page=1&type=photo-grafic&jsonld=1';
-
-// Завантажує й розбирає графік.
-// cacheTtl: 300 — Cloudflare тримає відповідь у кеші 5 хвилин,
-// тож навіть якщо додаток відкриють 100 разів, до Львівобленерго піде лише 1 запит.
-async function loadSchedule() {
-  const response = await fetch(LOE_URL, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (svitlo-lviv personal app)' },
-    cf: { cacheTtl: 300, cacheEverything: true },
-  });
-  if (!response.ok) {
-    throw new Error(`Львівобленерго відповіло з кодом ${response.status}`);
-  }
-  const json = await response.json();
-  return parseSchedule(json);
-}
+import { groupStatus, kyivNow } from '../public/parser.js';
+import { loadSchedule } from './schedule.js';
+import { handleUpdate } from './telegram.js';
+import { checkForChanges } from './notify.js';
 
 // Допоміжна функція: відповідь у форматі JSON
 function jsonResponse(data, status = 200) {
@@ -35,8 +23,24 @@ function jsonResponse(data, status = 200) {
 }
 
 export default {
-  async fetch(request) {
+  // Обробка звичайних HTTP-запитів
+  async fetch(request, env) {
     const url = new URL(request.url);
+
+    // POST /telegram — сюди Telegram надсилає повідомлення, які люди пишуть боту
+    if (url.pathname === '/telegram' && request.method === 'POST') {
+      // Перевіряємо секрет, щоб ніхто, крім Telegram, не міг слати сюди запити
+      if (request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== env.TELEGRAM_SECRET) {
+        return new Response('Forbidden', { status: 403 });
+      }
+      try {
+        await handleUpdate(env, await request.json());
+      } catch (error) {
+        console.error('Помилка бота:', error);
+      }
+      // Завжди відповідаємо 200, інакше Telegram буде повторювати те саме повідомлення
+      return new Response('ok');
+    }
 
     try {
       // GET /api/schedule — увесь графік: сьогодні й завтра
@@ -45,7 +49,7 @@ export default {
         return jsonResponse({ days, fetchedAt: new Date().toISOString() });
       }
 
-      // GET /api/group/2.1 — короткий статус однієї групи (для віджетів і телевізора)
+      // GET /api/group/2.1 — короткий статус однієї групи (для віджетів)
       const groupMatch = url.pathname.match(/^\/api\/group\/(\d\.\d)$/);
       if (groupMatch) {
         const groupId = groupMatch[1];
@@ -66,5 +70,10 @@ export default {
       // 502 — "поганий шлюз": проблема не в нас, а на сайті, звідки беремо дані
       return jsonResponse({ error: error.message }, 502);
     }
+  },
+
+  // Запуск за розкладом (див. [triggers] у wrangler.toml) — перевірка змін графіка
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(checkForChanges(env));
   },
 };

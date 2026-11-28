@@ -160,16 +160,32 @@ input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-
 }
 .btn.secondary { background: var(--track); color: var(--text); }
 
-/* ---------- Режим "табло" для телевізора: /?tv&group=2.1 ---------- */
-body.tv .top, body.tv .all { display: none; }
-body.tv main { max-width: none; padding: 4vh 6vw; }
-body.tv .card { padding: 5vh 4vw; border-left-width: 1.5vw; }
-body.tv .badge { font-size: 5vh; }
-body.tv .status { font-size: 9vh; }
-body.tv .countdown { font-size: 4vh; }
-body.tv .day-head { font-size: 3vh; }
-body.tv .timeline { height: 4vh; border-radius: 2vh; }
-body.tv .ticks { font-size: 2.2vh; }
 
 /* однакова ширина значків груп у налаштуваннях, щоб поля підписів стояли рівно */
 .pick .badge { min-width: 40px; text-align: center; }
+
+/* ---------- Посилання на Telegram-бота ---------- */
+.tg-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border-radius: 18px;
+  padding: 14px 16px;
+  margin-top: 14px; /* відступ від блоку «Усі групи» над ним */
+  color: var(--text);
+  text-decoration: none; /* прибираємо підкреслення посилання */
+}
+.tg-link:hover { background: #262a33; }
+.tg-link b { display: block; }
+.tg-link .muted { display: block; margin: 2px 0 0; }
+.tg-icon {
+  background: #2aabee; /* фірмовий блакитний колір Telegram */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

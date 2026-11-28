@@ -6,3 +6,17 @@ compatibility_date = "2026-11-01"
 # Статичні файли сайту (HTML, CSS, JS, іконки)
 [assets]
 directory = "./public"
+
+# Збір логів, щоб бачити помилки в панелі Cloudflare
+[observability]
+enabled = true
+
+# Запуск перевірки змін графіка кожні 5 хвилин (для Telegram-сповіщень)
+[triggers]
+crons = ["*/5 * * * *"]
+
+# Сховище KV для підписників бота і останнього знімка графіка.
+# id встав той, що покаже команда: npx.cmd wrangler kv namespace create SVITLO
+[[kv_namespaces]]
+binding = "SVITLO"
+id = "14572921c0484584ac1e9f97b800e607"
